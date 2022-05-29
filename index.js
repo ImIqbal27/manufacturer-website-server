@@ -33,12 +33,41 @@ async function run() {
             res.send(product);
 
         });
-        ////////////////  order/post data on db  ///////////////////////////////////////
+        ////////////////  order/post data on db by user  ///////////////////////////////////////
         app.post('/order', async (req, res) => {
             const newProduct = req.body;
             const result = await orderCollection.insertOne(newProduct);
             res.send(result);
         });
+        ////////////////  order data from db on user/ email based  /////////////////////////////
+        app.get('/order', async (req, res) => {
+            const userEmail = req.query.userEmail;
+            const query = { userEmail: userEmail };
+            const orders = await orderCollection.find(query).toArray();
+            res.send(orders);
+        })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
     finally {
 
