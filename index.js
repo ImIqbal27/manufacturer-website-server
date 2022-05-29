@@ -16,7 +16,7 @@ async function run() {
     try {
         await client.connect();
         const productCollection = client.db('manufacturer_website').collection('products');
-        console.log('colle');
+        const orderCollection = client.db('manufacturer_website').collection('orders');
 
         /////////////////// get all product/data from mongodb/ api /////////////////////
         app.get('/product', async (req, res) => {
@@ -25,13 +25,19 @@ async function run() {
             const products = await cursor.toArray();
             res.send(products);
         });
-        ///////////  for get single data/product from db on UI ////////////
+        ///////////  for get single data/product from db on UI ////////////////////////
         app.get('/product/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const product = await productCollection.findOne(query);
             res.send(product);
 
+        });
+        ////////////////  order/post data on db  ///////////////////////////////////////
+        app.post('/order', async (req, res) => {
+            const newProduct = req.body;
+            const result = await orderCollection.insertOne(newProduct);
+            res.send(result);
         });
     }
     finally {
