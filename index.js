@@ -17,6 +17,7 @@ async function run() {
         await client.connect();
         const productCollection = client.db('manufacturer_website').collection('products');
         const orderCollection = client.db('manufacturer_website').collection('orders');
+        const userCollection = client.db('manufacturer_website').collection('users');
 
         /////////////////// get all product/data from mongodb/ api /////////////////////
         app.get('/product', async (req, res) => {
@@ -45,6 +46,18 @@ async function run() {
             const query = { userEmail: userEmail };
             const orders = await orderCollection.find(query).toArray();
             res.send(orders);
+        });
+        /////////////////// put user  /////////////////////////////
+        app.put('/user/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = req.body;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: user,
+            };
+            const result = await userCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
         })
 
 
